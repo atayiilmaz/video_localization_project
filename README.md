@@ -44,7 +44,7 @@ A Python-based video localization automation tool that overlays images and title
    After activating the virtual environment, install the required libraries using pip:
 
    ```bash
-   pip install
+   pip install -r requirements.txt
    ```
 
 ## Usage
