@@ -23,6 +23,14 @@ def load_images_from_folder(folder_path):
     # Return the sorted list of image file paths
     return sorted(processed_images)
 
+def load_music_from_folder(folder_path):
+    """Loads music files from the specified folder."""
+    music_extensions = ['*.mp3', '*.wav', '*.aac']
+    music_files = []
+    for ext in music_extensions:
+        music_files.extend(glob.glob(os.path.join(folder_path, ext)))
+    return sorted(music_files)
+
 def load_titles_from_excel(excel_file, sheet_name=0, title_column=None):
     """Loads titles from an Excel file and returns them as a list."""
     df = pd.read_excel(excel_file, sheet_name=sheet_name)
