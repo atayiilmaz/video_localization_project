@@ -1,6 +1,7 @@
 import os
 import glob
 import pandas as pd
+from video_processing.utils import convert_to_jpg
 
 def load_images_from_folder(folder_path):
     """Loads image file paths with various extensions from the specified folder."""
@@ -11,9 +12,16 @@ def load_images_from_folder(folder_path):
     images = []
     for ext in image_extensions:
         images.extend(glob.glob(os.path.join(folder_path, ext)))
+
+    # Process each image, converting AVIF to JPG where necessary
+    processed_images = []
+    for image_path in sorted(images):
+        # Convert to JPG if needed (and delete AVIF)
+        jpg_image_path = convert_to_jpg(image_path)
+        processed_images.append(jpg_image_path)
     
     # Return the sorted list of image file paths
-    return sorted(images)
+    return sorted(processed_images)
 
 def load_titles_from_excel(excel_file, sheet_name=0, title_column=None):
     """Loads titles from an Excel file and returns them as a list."""

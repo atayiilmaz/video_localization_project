@@ -1,6 +1,6 @@
+from PIL import Image
 import cv2
 import os
-import imageio
 from moviepy.editor import VideoFileClip, ImageClip, TextClip, CompositeVideoClip
 from .green_area import detect_green_area
 
@@ -44,7 +44,8 @@ def overlay_image_on_video(video_clip, image_path):
     
     return video_clip.fl(process_frame)
 
-def create_localized_videos(base_video_path, images, titles, output_dir):
+
+def create_localized_videos(base_video_path, images, titles, font_size, output_dir):
     """Creates multiple localized videos by overlaying images and titles on a base video."""
     base_video = VideoFileClip(base_video_path)
     
@@ -56,7 +57,7 @@ def create_localized_videos(base_video_path, images, titles, output_dir):
 
         wrapped_title = wrap_text(title_text, max_chars=40)
         
-        title_clip = TextClip(wrapped_title, fontsize=45, color='white', stroke_color='black', stroke_width=2)
+        title_clip = TextClip(wrapped_title, fontsize=font_size, color='white', stroke_color='black', stroke_width=2)
         title_clip = title_clip.set_duration(base_video.duration).set_position(("center", 100))
         
         final_video = CompositeVideoClip([video_with_overlay, title_clip])
