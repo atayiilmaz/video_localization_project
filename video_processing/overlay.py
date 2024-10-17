@@ -1,7 +1,7 @@
 from PIL import Image
 import cv2
 import os
-from moviepy.editor import VideoFileClip, ImageClip, TextClip, CompositeVideoClip
+from moviepy.editor import VideoFileClip, ImageClip, TextClip, CompositeVideoClip, AudioFileClip
 from .green_area import detect_green_area
 
 def wrap_text(text, max_chars=40):
@@ -45,14 +45,14 @@ def overlay_image_on_video(video_clip, image_path):
     return video_clip.fl(process_frame)
 
 
-def create_localized_videos(base_video_path, images, titles, font_size, output_dir):
+def create_localized_videos(base_video_path, images, titles, musics, font_size, output_dir):
     """Creates multiple localized videos by overlaying images and titles on a base video."""
     base_video = VideoFileClip(base_video_path)
     
-    if len(images) != len(titles):
-        raise ValueError("Number of images and titles do not match!")
+    if len(images) != len(titles) != len(musics):
+        raise ValueError("Number of images, titles and musics do not match!")
     
-    for i, (image_path, title_text) in enumerate(zip(images, titles)):
+    for i, (image_path, title_text, music_path) in enumerate(zip(images, titles, musics)):
         video_with_overlay = overlay_image_on_video(base_video, image_path)
 
         wrapped_title = wrap_text(title_text, max_chars=40)
@@ -61,6 +61,12 @@ def create_localized_videos(base_video_path, images, titles, font_size, output_d
         title_clip = title_clip.set_duration(base_video.duration).set_position(("center", 100))
         
         final_video = CompositeVideoClip([video_with_overlay, title_clip])
+
+        # Load the corresponding music file
+        audio_clip = AudioFileClip(music_path)
+        audio_clip = audio_clip.subclip(0, min(final_video.duration, audio_clip.duration))  # Trim audio to video length
+        final_video = final_video.set_audio(audio_clip)
+
         output_path = os.path.join(output_dir, f"localized_video_{i + 1}.mp4")
         
         final_video.write_videofile(output_path, codec="libx264")
