@@ -1,4 +1,3 @@
-from PIL import Image
 import cv2
 import os
 from moviepy.editor import VideoFileClip, ImageClip, TextClip, CompositeVideoClip, AudioFileClip
@@ -43,7 +42,6 @@ def overlay_image_on_video(video_clip, image_path):
         return cv2.cvtColor(frame_cv, cv2.COLOR_BGR2RGB)
     
     return video_clip.fl(process_frame)
-
 
 def create_localized_videos(base_video_path, images, titles, musics, font_size, output_dir):
     """Creates multiple localized videos by overlaying images and titles on a base video."""
